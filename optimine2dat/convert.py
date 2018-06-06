@@ -26,6 +26,9 @@ class Optimine(object):
         self.__operator = None
         self.__pressure_sn = None
         self.__pressure_vessel = None
+        self.__pressure_volt_scale = 10.013
+        self.__pressure_volt_offset = 0.013
+
         self.__test_item = {}
         self.delimiter = '\t'
         self.line_ending = '\r\n'
@@ -173,6 +176,57 @@ class Optimine(object):
         return self.__pressure_unit
 
     @property
+    def pressure_scale_factor(self):
+        return self.__pressure_unit_scale_factor
+
+    @pressure_scale_factor.setter
+    def pressure_scale_factor(self, value):
+        """
+
+        :param value:
+        :return:
+        """
+
+        if not isinstance(value, [int, float]):
+            raise TypeError("Expceted an int or a float, received: '%s'" % (type(value),))
+
+        self.__pressure_unit_scale_factor = value
+
+    @property
+    def pressure_volt_scale(self):
+        return self.__pressure_volt_scale
+
+    @pressure_volt_scale.setter
+    def pressure_volt_scale(self, value):
+        """
+
+        :param value:
+        :return:
+        """
+
+        if not isinstance(value, (int, float)):
+            raise TypeError("Expceted an int or a float, received: '%s'" % (type(value),))
+
+        self.__pressure_volt_scale = value
+
+    @property
+    def pressure_volt_offset(self):
+        return self.__pressure_volt_offset
+
+    @pressure_volt_offset.setter
+    def pressure_volt_offset(self, value):
+        """
+
+        :param value:
+        :return:
+        """
+
+        if not isinstance(value, (int, float)):
+            raise TypeError("Expceted an int or a float, received: '%s'" % (type(value),))
+
+        self.__pressure_volt_offset = value
+
+    @property
     def pressure(self):
         return self.__pressure
 
@@ -269,7 +323,7 @@ class Optimine(object):
         df['pressure_int'] = df['pressure'].apply(pd.np.round, 'index').astype('int64')
 
         # Add a dummy volt column
-        df['pressure_volts'] = df['pressure'] / (2500 / 10.013) - 0.013
+        df['pressure_volts'] = df['pressure'] / (2500 / self.pressure_volt_scale) - self.pressure_volt_offset
 
         #
         # This is where we'll eventually use df.merge() to pull in acoustic data, but for now

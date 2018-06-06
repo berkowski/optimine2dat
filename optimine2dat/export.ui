@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>OptimineExport</class>
+ <widget class="QDialog" name="OptimineExport">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>628</width>
+    <height>596</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Optimine DAT Exporter</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout" columnstretch="0,1,0,1">
+     <item row="0" column="0">
+      <widget class="QLabel" name="pressureFileLabel">
+       <property name="text">
+        <string>&amp;Pressure Data:</string>
+       </property>
+       <property name="buddy">
+        <cstring>pressureFileLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="3">
+      <widget class="QToolButton" name="pressureFileButton">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="acousticsFileLabel">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>&amp;Acoustics Data:</string>
+       </property>
+       <property name="buddy">
+        <cstring>acousticsFileLineEdit</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="3">
+      <widget class="QToolButton" name="acousticsFileButton">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QLineEdit" name="pressureFileLineEdit">
+       <property name="placeholderText">
+        <string>Optimine JSON File</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QLineEdit" name="acousticsFileLineEdit">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="placeholderText">
+        <string>Acoustic Data File</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QPushButton" name="importButton">
+     <property name="text">
+      <string>&amp;Import Files</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="reportGroup">
+     <property name="title">
+      <string>Report Info:</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="pressureTransducerLineEdit">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="durationLabel">
+        <property name="text">
+         <string>Test Duration: </string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="testReportLabel">
+        <property name="text">
+         <string>&amp;Test Report:</string>
+        </property>
+        <property name="buddy">
+         <cstring>testReportLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QDateTimeEdit" name="startTimeEdit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="displayFormat">
+         <string>M/d/yyyy hh:mm AP</string>
+        </property>
+        <property name="calendarPopup">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="endTimeLabel">
+        <property name="text">
+         <string>&amp;End Time:</string>
+        </property>
+        <property name="buddy">
+         <cstring>endTimeEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="testReportLineEdit"/>
+      </item>
+      <item row="2" column="3">
+       <widget class="QDateTimeEdit" name="endTimeEdit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="displayFormat">
+         <string>M/d/yyyy hh:mm AP</string>
+        </property>
+        <property name="calendarPopup">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="pressureVesselLabel">
+        <property name="text">
+         <string>Pressure &amp;Vessel:</string>
+        </property>
+        <property name="buddy">
+         <cstring>pressureVesselLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="startTimeLabel">
+        <property name="text">
+         <string>&amp;Start Time:</string>
+        </property>
+        <property name="buddy">
+         <cstring>startTimeEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QLabel" name="pressureTransducerLabel">
+        <property name="text">
+         <string>Pressure &amp;Trasducer:</string>
+        </property>
+        <property name="buddy">
+         <cstring>pressureTransducerLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="operatorLineEdit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="operatorLabel">
+        <property name="text">
+         <string>&amp;Operator:</string>
+        </property>
+        <property name="buddy">
+         <cstring>operatorLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="pressureVesselLineEdit">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="pressureUnitLabel">
+        <property name="text">
+         <string>Pressure Unit:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QLabel" name="pressureUnit">
+        <property name="toolTip">
+         <string>Recorded Pressure Units</string>
+        </property>
+        <property name="text">
+         <string>unit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="3">
+       <widget class="QLabel" name="duration">
+        <property name="text">
+         <string>Duration</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="2">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Scale &amp;Factor for PSI:</string>
+        </property>
+        <property name="buddy">
+         <cstring>scaleFactorSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="3">
+       <widget class="QDoubleSpinBox" name="scaleFactorSpinBox">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>6</number>
+        </property>
+        <property name="maximum">
+         <double>1000.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>1.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="testGroup">
+     <property name="title">
+      <string>Test Item Info:</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3" columnstretch="0,1,0,1">
+      <item row="0" column="0">
+       <widget class="QLabel" name="partNumberLabel">
+        <property name="text">
+         <string>&amp;Part Number:</string>
+        </property>
+        <property name="buddy">
+         <cstring>partNumberLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="partNumberLineEdit">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="placeholderText">
+         <string>Item Part Number</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="serialNumberLabel">
+        <property name="text">
+         <string>Serial &amp;Number:</string>
+        </property>
+        <property name="buddy">
+         <cstring>serialNumberLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLineEdit" name="serialNumberLineEdit">
+        <property name="text">
+         <string/>
+        </property>
+        <property name="placeholderText">
+         <string>Item Serial Number</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="4">
+       <widget class="QPlainTextEdit" name="plainTextEdit">
+        <property name="placeholderText">
+         <string>Add test description here</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="exportGroup">
+     <property name="title">
+      <string>Export Options:</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_4">
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="fullScaleSpinBox">
+        <property name="toolTip">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>3</number>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+        <property name="value">
+         <double>10.013000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="fullScaleLabel">
+        <property name="text">
+         <string>&amp;Full Scale:</string>
+        </property>
+        <property name="buddy">
+         <cstring>fullScaleSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QDoubleSpinBox" name="zeroBalanceSpinBox">
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="buttonSymbols">
+         <enum>QAbstractSpinBox::NoButtons</enum>
+        </property>
+        <property name="decimals">
+         <number>3</number>
+        </property>
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.013000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="zeroBalanceLabel">
+        <property name="text">
+         <string>&amp;Zero Balance:</string>
+        </property>
+        <property name="buddy">
+         <cstring>zeroBalanceSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="4">
+       <widget class="QLabel" name="scaleBalanceHelp">
+        <property name="text">
+         <string>Use same values here that you will when importing with the &quot;Acoustic Reader&quot; LabVIEW program</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="exportButton">
+       <property name="text">
+        <string>E&amp;xport</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="closeButton">
+       <property name="text">
+        <string>&amp;Close</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>pressureFileLineEdit</tabstop>
+  <tabstop>pressureFileButton</tabstop>
+  <tabstop>acousticsFileLineEdit</tabstop>
+  <tabstop>acousticsFileButton</tabstop>
+  <tabstop>testReportLineEdit</tabstop>
+  <tabstop>pressureVesselLineEdit</tabstop>
+  <tabstop>operatorLineEdit</tabstop>
+  <tabstop>pressureTransducerLineEdit</tabstop>
+  <tabstop>startTimeEdit</tabstop>
+  <tabstop>endTimeEdit</tabstop>
+  <tabstop>scaleFactorSpinBox</tabstop>
+  <tabstop>partNumberLineEdit</tabstop>
+  <tabstop>serialNumberLineEdit</tabstop>
+  <tabstop>plainTextEdit</tabstop>
+  <tabstop>fullScaleSpinBox</tabstop>
+  <tabstop>zeroBalanceSpinBox</tabstop>
+  <tabstop>exportButton</tabstop>
+  <tabstop>closeButton</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>
