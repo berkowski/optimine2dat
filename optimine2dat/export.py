@@ -163,9 +163,14 @@ class ExportDialog(QtWidgets.QDialog):
         )
 
 
-if __name__ == '__main__':
+def main():
     import sys
     app = QtWidgets.QApplication(sys.argv)
     dialog = ExportDialog(None)
     dialog.show()
     sys.exit(app.exec_())
+
+
+if __name__ == '__main__':
+    main()
+
