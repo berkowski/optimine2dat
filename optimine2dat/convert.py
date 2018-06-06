@@ -21,6 +21,7 @@ class Optimine(object):
         self.__pressure = None
         self.__temperature = None
         self.__pressure_unit = None
+        self.__pressure_unit_scale_factor = 1.0
         self.__acoustics = None
         self.__operator = None
         self.__pressure_sn = None
@@ -40,6 +41,17 @@ class Optimine(object):
 
         # Get pressure unit
         self.__pressure_unit = self.__raw_json['PressureUnit']['Data']['Value']
+        tmp_ = self.__pressure_unit.lower().strip()
+
+        # Set the scale factor to convert to psi
+        if tmp_ == 'psi':
+            self.__pressure_unit_scale_factor = 1.0
+        elif tmp_ == 'mpa':
+            self.__pressure_unit_scale_factor = 145.03773773
+        elif tmp_ == 'bar':
+            self.__pressure_unit_scale_factor = 14.503773773
+        elif tmp_ == 'msw':
+            self.__pressure_unit_scale_factor = 1.4503773773
 
         # Get Start and Stop times
         self.__start_time = pd.to_datetime(self.__raw_json['StartTime']['Data']['Value'])
