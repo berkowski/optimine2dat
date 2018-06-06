@@ -22,6 +22,10 @@ class Optimine(object):
         self.__temperature = None
         self.__pressure_unit = None
         self.__acoustics = None
+        self.__operator = None
+        self.__pressure_sn = None
+        self.__pressure_vessel = None
+        self.__test_item = {}
         self.delimiter = '\t'
         self.line_ending = '\r\n'
 
@@ -40,6 +44,24 @@ class Optimine(object):
         # Get Start and Stop times
         self.__start_time = pd.to_datetime(self.__raw_json['StartTime']['Data']['Value'])
         self.__end_time = pd.to_datetime(self.__raw_json['EndTime']['Data']['Value'])
+
+        # Get operator name
+        self.__operator = self.__raw_json['ExecuteProfile']['Metadata']['Operator']
+
+        # Pressure Transducer Serial Number
+        self.__pressure_sn = self.__raw_json['PTSerialNumber']['Data']['Value']
+
+        # Pressure Vessel "Install Name"
+        self.__pressure_vessel = self.__raw_json['InstallationName']['Data']['Value']
+
+        # Test Item metadata
+        dict_ = self.__raw_json['TestItem']['Data']
+        self.__test_item = dict(
+            description=dict_['Description'],
+            part_number=dict_['PartNumber'],
+            serial_number=dict_['SerialNumber'],
+            test_report=dict_['TestReport']
+        )
 
         # Load pressure profile
         dict_ = self.__raw_json['Profile']['Data']['ListItems']
@@ -141,6 +163,34 @@ class Optimine(object):
     @property
     def pressure(self):
         return self.__pressure
+
+    @property
+    def operator(self):
+        return self.__operator
+
+    @property
+    def pressure_vessel(self):
+        return self.__pressure_vessel
+
+    @property
+    def pressure_transducer_serial_number(self):
+        return self.__pressure_sn
+
+    @property
+    def test_description(self):
+        return self.__test_item.get('description', '')
+
+    @property
+    def test_part_number(self):
+        return self.__test_item.get('part_number', '')
+
+    @property
+    def test_serial_number(self):
+        return self.__test_item.get('serial_number', '')
+
+    @property
+    def test_report(self):
+        return self.__test_item.get('test_report', '')
 
     @property
     def profile(self):
