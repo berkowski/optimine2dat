@@ -4,7 +4,7 @@ from PyQt5 import (QtCore, QtWidgets, uic)
 
 import os
 import traceback
-
+import sys
 
 TXT_TEMPLATE = \
 """
@@ -34,7 +34,13 @@ class ExportDialog(QtWidgets.QDialog):
         """
 
         QtWidgets.QDialog.__init__(self, parent=parent)
-        uic.loadUi(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'export.ui'), self)
+        if getattr(sys, 'frozen', False):
+            path_ = sys._MEIPASS 
+        else:
+            path_ = os.path.dirname(__file__)
+
+        print("path_: %s" % (path_,))
+        uic.loadUi(os.path.join(os.path.abspath(path_), 'export.ui'), self)
 
         self.__data = None
         self.__settings = QtCore.QSettings("WHOI", "Optimine2Dat")
@@ -241,7 +247,6 @@ class ExportDialog(QtWidgets.QDialog):
 
 
 def main():
-    import sys
     app = QtWidgets.QApplication(sys.argv)
     dialog = ExportDialog(None)
     dialog.show()
