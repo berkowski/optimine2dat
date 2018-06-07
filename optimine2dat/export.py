@@ -1,10 +1,11 @@
 from optimine2dat import Optimine
 
-from PyQt5 import (QtCore, QtWidgets, uic)
+from PyQt5 import (QtGui, QtCore, QtWidgets, QtChart, uic)
 
 import os
 import traceback
 import sys
+import time
 
 TXT_TEMPLATE = \
 """
@@ -53,6 +54,7 @@ class ExportDialog(QtWidgets.QDialog):
 
         self.closeButton.clicked.connect(self.reject)
         self.exportButton.clicked.connect(self.export_clicked)
+        self.plotButton.clicked.connect(self.plot_clicked)
 
 
     @QtCore.pyqtSlot()
@@ -143,6 +145,66 @@ class ExportDialog(QtWidgets.QDialog):
         self.__data = opt
 
         return True
+
+    @QtCore.pyqtSlot()
+    def plot_clicked(self):
+        """
+
+        :return:
+        """
+
+        if self.__data is None:
+            QtWidgets.QMessageBox.critical(self, "Error Plotting Data", "Need to import data first.")
+            return
+
+        psi_series = QtChart.QLineSeries()
+        psi_series.setName("Pressure")
+        for ts, p in self.__data.pressure.iteritems():
+            psi_series.append(time.mktime(ts.timetuple()) * 1000, p)
+
+        temp_series = QtChart.QLineSeries()
+        temp_series.setName("Temperature")
+        for ts, t in self.__data.temperature.iteritems():
+            temp_series.append(time.mktime(ts.timetuple()) * 1000, t)
+
+
+
+        chart = QtChart.QChart()
+        chart.addSeries(psi_series)
+        chart.addSeries(temp_series)
+
+        x_axis = QtChart.QDateTimeAxis()
+        x_axis.setTickCount(10)
+        x_axis.setFormat("HH:mm:ss")
+        x_axis.setTitleText("Time")
+        chart.addAxis(x_axis, QtCore.Qt.AlignBottom)
+        psi_series.attachAxis(x_axis)
+
+        psi_axis = QtChart.QValueAxis()
+        psi_axis.setLabelFormat("%i")
+        psi_axis.setTitleText("Pressure (psi)")
+        chart.addAxis(psi_axis, QtCore.Qt.AlignLeft)
+        psi_series.attachAxis(psi_axis)
+
+        temp_axis = QtChart.QValueAxis()
+        temp_axis.setLabelFormat("%.2f")
+        temp_axis.setTitleText("Temperature (C)")
+        chart.addAxis(temp_axis, QtCore.Qt.AlignLeft)
+        temp_series.attachAxis(temp_axis)
+
+        chart.setTitle("Pressure Test %s" % (self.testReportLineEdit.text()))
+
+        view = QtChart.QChartView(chart)
+        view.setRenderHint(QtGui.QPainter.Antialiasing)
+
+        dialog = QtWidgets.QDialog(self)
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(view)
+        dialog.setLayout(layout)
+        dialog.resize(1000, 800)
+
+        dialog.show()
+
 
     def updateDialog(self, data):
         """

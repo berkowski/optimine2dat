@@ -19,6 +19,7 @@ setup(
     },
     install_requires=[
         'PyQt5 >= 5.10',
+        'PyQtChart >= 5.10',
         'pandas'
     ]
 )
