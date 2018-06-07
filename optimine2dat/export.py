@@ -39,7 +39,6 @@ class ExportDialog(QtWidgets.QDialog):
         else:
             path_ = os.path.dirname(__file__)
 
-        print("path_: %s" % (path_,))
         uic.loadUi(os.path.join(os.path.abspath(path_), 'export.ui'), self)
 
         self.__data = None

@@ -1,6 +1,7 @@
 import json
 from datetime import (timedelta,)
 import pandas as pd
+import os
 
 class Optimine(object):
     """
@@ -31,7 +32,12 @@ class Optimine(object):
 
         self.__test_item = {}
         self.__delim = '\t'
-        self.__line_ending = '\r\n'
+
+        if os.name == 'posix':
+            self.__line_ending = '\r\n'
+        else:
+            self.__line_ending = '\n'
+
 
     def read_json(self, filename):
         """
