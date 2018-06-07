@@ -10,6 +10,8 @@ TXT_TEMPLATE = \
 """
 WHOI P-Test {test_name}
 Operator Name: {operator_name}
+Start Time: {start_time}
+End Time: {end_time}
 
 Client Name: {client_name}
 Client Group: {client_group}
@@ -35,6 +37,7 @@ class ExportDialog(QtWidgets.QDialog):
         uic.loadUi(os.path.join(os.path.abspath(os.path.dirname(__file__)), 'export.ui'), self)
 
         self.__data = None
+        self.__settings = QtCore.QSettings("WHOI", "Optimine2Dat")
 
         # Button Connections
         self.importButton.clicked.connect(
@@ -54,12 +57,18 @@ class ExportDialog(QtWidgets.QDialog):
         :return:
         """
 
+        dirname = self.__settings.value("import/json/directory", "")
+
         # We dont' care about the returned active filter
         json_file, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="Optimine JSON File", filter="JSON *.json (*.json);; Any *.* (*.*)")
+            self,
+            directory=dirname,
+            caption="Optimine JSON File", filter="JSON *.json (*.json);; Any *.* (*.*)")
 
         if len(json_file) == 0:
             return
+
+        self.__settings.setValue("import/json/directory", os.path.abspath(os.path.dirname(json_file)))
 
         # Now set the text edit box
         self.pressureFileLineEdit.setText(json_file)
@@ -71,13 +80,18 @@ class ExportDialog(QtWidgets.QDialog):
         :return:
         """
 
+        dirname = self.__settings.value("import/acoustics/directory", "")
+
         # We dont' care about the returned active filter
         acoustics_file, _ = QtWidgets.QFileDialog.getOpenFileName(
-            self, caption="Acoustics Data File", filter="Any *.* (*.*)")
+            self,
+            directory=dirname,
+            caption="Acoustics Data File", filter="Any *.* (*.*)")
 
         if len(acoustics_file) == 0:
             return
 
+        self.__settings.setValue("import/acoustics/directory", os.path.abspath(os.path.dirname(acoustics_file)))
         # Now set the text edit box
         self.acousticsFileLineEdit.setText(acoustics_file)
 
@@ -89,6 +103,14 @@ class ExportDialog(QtWidgets.QDialog):
         :param acoustics_data:
         :return:
         """
+
+        if pressure_json is None or len(pressure_json) == 0:
+            QtWidgets.QMessageBox.critical(
+                self,
+                "No JSON File Selected",
+                "Select an Optimine JSON pressure file before clicking 'Import'."
+            )
+            return
 
         opt = Optimine()
         try:
@@ -152,6 +174,8 @@ class ExportDialog(QtWidgets.QDialog):
         text = TXT_TEMPLATE.format(
             test_name=self.reportGroup.findChild(QtWidgets.QLineEdit, 'testReportLineEdit').text(),
             operator_name=self.reportGroup.findChild(QtWidgets.QLineEdit, 'operatorLineEdit').text(),
+            start_time=self.reportGroup.findChild(QtWidgets.QDateTimeEdit, 'startTimeEdit').dateTime().toString('MM/dd/yyyy HH:mm:ss'),
+            end_time=self.reportGroup.findChild(QtWidgets.QDateTimeEdit, 'endTimeEdit').dateTime().toString('MM/dd/yyyy HH:mm:ss'),
             client_name=self.testGroup.findChild(QtWidgets.QLineEdit, 'clientNameLineEdit').text(),
             client_group=self.testGroup.findChild(QtWidgets.QLineEdit, 'clientGroupLineEdit').text(),
             part_number=self.testGroup.findChild(QtWidgets.QLineEdit, 'partNumberLineEdit').text(),
@@ -176,16 +200,22 @@ class ExportDialog(QtWidgets.QDialog):
             QtWidgets.QMessageBox.critical(self, "Error Exporting Data", "Need to import data first.")
             return
 
+        dirname = self.__settings.value("export/directory", "")
+
+        filename = os.path.join(
+            dirname,
+            "Pressure_Test_%s_%s.dat" % (self.testReportLineEdit.text(), self.startTimeEdit.dateTime().toString("yyyy-MM-dd_HH-mm"))
+        )
+
         # Don't care about the filter
         filename, _ = QtWidgets.QFileDialog.getSaveFileName(
             self,
             "Save File",
-            "Pressure_Test_%s_%s.dat" % (self.testReportLineEdit.text(), self.startTimeEdit.dateTime().toString("yyyy-MM-dd_HH-mm"))
+            filename
         )
 
         if len(filename) == 0:
             return
-
 
         # Update scale factors
         self.__data.pressure_full_scale = self.fullScaleSpinBox.value()
@@ -205,6 +235,9 @@ class ExportDialog(QtWidgets.QDialog):
                 os.path.basename(txt_filename),
                 os.path.dirname(filename))
         )
+
+        # Update the export-related settings
+        self.__settings.setValue("export/directory", os.path.dirname(filename))
 
 
 def main():
