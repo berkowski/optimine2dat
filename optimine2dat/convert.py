@@ -30,8 +30,8 @@ class Optimine(object):
         self.__pressure_volt_offset = 0.013
 
         self.__test_item = {}
-        self.delimiter = '\t'
-        self.line_ending = '\r\n'
+        self.__delim = '\t'
+        self.__line_ending = '\r\n'
 
     def read_json(self, filename):
         """
@@ -187,17 +187,17 @@ class Optimine(object):
         :return:
         """
 
-        if not isinstance(value, [int, float]):
+        if not isinstance(value, (int, float)):
             raise TypeError("Expceted an int or a float, received: '%s'" % (type(value),))
 
         self.__pressure_unit_scale_factor = value
 
     @property
-    def pressure_volt_scale(self):
+    def pressure_full_scale(self):
         return self.__pressure_volt_scale
 
-    @pressure_volt_scale.setter
-    def pressure_volt_scale(self, value):
+    @pressure_full_scale.setter
+    def pressure_full_scale(self, value):
         """
 
         :param value:
@@ -205,16 +205,16 @@ class Optimine(object):
         """
 
         if not isinstance(value, (int, float)):
-            raise TypeError("Expceted an int or a float, received: '%s'" % (type(value),))
+            raise TypeError("Expected an int or a float, received: '%s'" % (type(value),))
 
         self.__pressure_volt_scale = value
 
     @property
-    def pressure_volt_offset(self):
+    def pressure_zero_bias(self):
         return self.__pressure_volt_offset
 
-    @pressure_volt_offset.setter
-    def pressure_volt_offset(self, value):
+    @pressure_zero_bias.setter
+    def pressure_zero_bias(self, value):
         """
 
         :param value:
@@ -222,7 +222,7 @@ class Optimine(object):
         """
 
         if not isinstance(value, (int, float)):
-            raise TypeError("Expceted an int or a float, received: '%s'" % (type(value),))
+            raise TypeError("Expected an int or a float, received: '%s'" % (type(value),))
 
         self.__pressure_volt_offset = value
 
@@ -322,16 +322,45 @@ class Optimine(object):
         # Add a column with the rounded integer value of the pressure
         df['pressure_int'] = df['pressure'].apply(pd.np.round, 'index').astype('int64')
 
-        # Add a dummy volt column
-        df['pressure_volts'] = df['pressure'] / (2500 / self.pressure_volt_scale) - self.pressure_volt_offset
+        # Create fake voltages.  It's these voltages that will eventually be plotted by the
+        # Acoustic Reader LabVIEW program.  The process is as follows:
+        #
+        # 1. If the 'full scale' value is between 2400 and 2600, treat it as a pressure coefficient
+        #    and convert it to a 'full scale' value
+        #
+        # 2. Calculate the slope by dividing 25000 by the 'full scale' value after subtracting the 'zero bias'
+        #    value
+        #
+        # 3. Calculate the offset using the 'zero bias' value
+
+        if 2400 < self.pressure_full_scale < 2600:
+            scale = 25000.0 / self.pressure_full_scale
+        else:
+            scale = self.pressure_full_scale
+
+        m = 25000 / (scale - self.pressure_zero_bias)
+        b = -m * self.pressure_zero_bias
+
+        df['pressure_volts'] = (df['pressure'] - b) / m
+
 
         #
-        # This is where we'll eventually use df.merge() to pull in acoustic data, but for now
-        # we'll just add two more dummy columns
+        # This is where we'll eventually use df.merge() to pull in acoustic data
         #
+        # The acoustic data REQUIRES the integer-value pressure and the two count fields ONLY
 
-        df['acoustic_count_interval'] = pd.np.nan
-        df['acoustic_count_total'] = pd.np.nan
+        df = df.append(
+            pd.DataFrame(
+                data={
+                    'pressure_int': df['pressure_int'].values[:],
+                    'acoustic_count_interval': [0] * len(df.index),
+                    'acoustic_count_total': [0] * len(df.index)
+                },
+                index=df.index
+            ),
+            sort=False
+        )
+        df.sort_index(inplace=True)
 
         # Now write out the file
         result = df.to_csv(

@@ -6,6 +6,20 @@ import os
 import traceback
 
 
+TXT_TEMPLATE = \
+"""
+WHOI P-Test {test_name}
+Operator Name: {operator_name}
+
+Client Name: {client_name}
+Client Group: {client_group}
+Item P/N(s): {part_number}
+Item S/N(s): {serial_number}
+
+Description:
+{description}
+"""
+
 class ExportDialog(QtWidgets.QDialog):
     """
 
@@ -128,6 +142,29 @@ class ExportDialog(QtWidgets.QDialog):
                 "Unknown pressure unit '%s'.  Please enter the required scale factor to convert to PSI." % (data.pressure_unit,)
             )
 
+    def write_txt(self, filename):
+        """
+
+        :param filename:
+        :return:
+        """
+
+        text = TXT_TEMPLATE.format(
+            test_name=self.reportGroup.findChild(QtWidgets.QLineEdit, 'testReportLineEdit').text(),
+            operator_name=self.reportGroup.findChild(QtWidgets.QLineEdit, 'operatorLineEdit').text(),
+            client_name=self.testGroup.findChild(QtWidgets.QLineEdit, 'clientNameLineEdit').text(),
+            client_group=self.testGroup.findChild(QtWidgets.QLineEdit, 'clientGroupLineEdit').text(),
+            part_number=self.testGroup.findChild(QtWidgets.QLineEdit, 'partNumberLineEdit').text(),
+            serial_number=self.testGroup.findChild(QtWidgets.QLineEdit, 'serialNumberLineEdit').text(),
+            description=self.testGroup.findChild(QtWidgets.QPlainTextEdit, 'descriptionTextEdit').toPlainText()
+        )
+
+        if filename is None:
+            return text
+
+        with open(filename, 'w') as fid:
+            fid.write(text)
+
     @QtCore.pyqtSlot()
     def export_clicked(self):
         """
@@ -149,17 +186,24 @@ class ExportDialog(QtWidgets.QDialog):
         if len(filename) == 0:
             return
 
-        # Update scale factors
-        self.__data.pressure_volt_scale = self.fullScaleSpinBox.value()
-        self.__data.pressure_volt_offset = self.zeroBalanceSpinBox.value()
 
-        # Write file
+        # Update scale factors
+        self.__data.pressure_full_scale = self.fullScaleSpinBox.value()
+        self.__data.pressure_zero_bias = self.zeroBalanceSpinBox.value()
+
+        # Write data file
         self.__data.to_dat(filename)
+
+        txt_filename = os.path.splitext(filename)[0] + ".txt"
+        self.write_txt(txt_filename)
 
         QtWidgets.QMessageBox.information(
             self,
             "Export Complete",
-            "Created file:\n  %s" % (filename,)
+            "Created files:\n  %s\n  %s\nIn directory:\n  %s" % (
+                os.path.basename(filename),
+                os.path.basename(txt_filename),
+                os.path.dirname(filename))
         )
 
 
