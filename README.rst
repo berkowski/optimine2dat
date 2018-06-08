@@ -4,6 +4,8 @@
 The program can be packaged into a single file using `pyinstaller`, but it's not a one-command deal.  First you'll need
 to generate the spec file using `pyi-makespec`:
 
+NOTE:  When packaging, use PyQt5 and PyQtChart version 5.9.2 (5.10 isn't supported well by pyinstaller)
+
 ## Linux version:
 
     pyi-makespec --onefile -n Optimine2Dat --add-data optimine2dat/export.ui:. optimine2dat/export.py
@@ -17,8 +19,9 @@ See notes:
   PyInstaller issue: https://github.com/pyinstaller/pyinstaller/issues/1566
   StackOverflow: https://stackoverflow.com/questions/46416221/pyinstaller-distributing-opencv-from-windows-10-to-windows-10-missing-ucrt-dll
 
-    pyi-makespec --onefile -n Optimine2Dat --add-binaries C:\Program Files (x86)\Windows Kits\10\Redist\ucrt\DLLs\x64;. \
-         --add-data optimine2dat/export.ui;. optimine2dat/export.py
+    pyi-makespec --onefile -n Optimine2Dat --add-binary "C:\Program Files (x86)\Windows Kits\10\Redist\ucrt\DLLs\x64;." \
+         --path "C:\Program Files (x86)\Windows Kits\10\Redist\ucrt\DLLs\x64" --add-data "optimine2dat/export.ui;." \
+         optimine2dat/export.py
 
 
 Then, you'll need to add the following after the 'Analasys()....' call to the generated .spec file:
