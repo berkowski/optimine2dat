@@ -9,14 +9,16 @@ if not os.path.exists(".appveyor"):
 
 NAME = "Optimine2Dat"
 DIR = os.path.realpath(".")
-PyInstDir = os.path.join(DIR, ".appveyor")
+PYMOD = os.path.join(DIR, 'optimine2dat')
+PYPROG = os.path.join(PYMOD, 'export.py')
+PYINSTDIR = os.path.join(DIR, ".appveyor")
 
 block_cipher = None
 
-a = Analysis([os.path.join('optimine2dat', 'export.py')],
+a = Analysis([PYPROG],
              pathex=[DIR],
              binaries=[],
-             datas=[('optimine2dat/export.ui', '.')],
+             datas=[(os.path.join(PYMOD, 'export.ui'), '.')],
              hiddenimports=[],
              hookspath=[],
              runtime_hooks=[],
