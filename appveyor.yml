@@ -1,0 +1,54 @@
+version: '0.1.{build}'
+
+environment:
+
+  matrix:
+
+    # - PYTHON: "C:\\Python27"
+    # - PYTHON: "C:\\Python33"
+    # - PYTHON: "C:\\Python34"
+    # - PYTHON: "C:\\Python35"
+    # - PYTHON: "C:\\Python27-x64"
+    # - PYTHON: "C:\\Python33-x64"
+    #   DISTUTILS_USE_SDK: "1"
+    # - PYTHON: "C:\\Python34-x64"
+    #   DISTUTILS_USE_SDK: "1"
+    # - PYTHON: "C:\\Python35-x64"
+    - PYTHON: "C:\\Python36-x64"
+
+init:
+  - "ECHO %PYTHON% %PYTHON_VERSION% %PYTHON_ARCH%"
+
+install:
+  # Add python scripts path
+
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  # Determine platform
+  - '%PYTHON%/python -c "import platform; print(platform.uname())"'
+  - '%PYTHON%/python -c "import sys; print(sys.version)"'
+
+  # Install packaging requirements
+  - "%PYTHON%\\python.exe -m pip install -r packaging_requirements.txt"
+
+  # Show the installed packages
+  - "%PYTHON%\\python.exe -m pip freeze"
+
+build: off
+
+# test_script:
+#  - "build.cmd %PYTHON%\\python.exe setup.py test"
+
+after_test:
+  # Run pyinstaller
+  - "pyinstaller -y --log-level=WARN .appveyor\\optimine2dat_win7.spec"
+
+  # Show generated files
+  - ps: "ls dist"
+
+artifacts:
+  - path: dist\*
+
+#on_success:
+#  You can use this step to upload your artifacts to a public website.
+#  See Appveyor's documentation for more details. Or you can simply
+#  access your wheels from the Appveyor "artifacts" tab for your build.
