@@ -1,0 +1,5 @@
+PyQt5==5.9.2
+PyQtChart==5.9.2
+pandas>=0.20
+pyinstaller>=3.3
+

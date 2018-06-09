@@ -1,0 +1,12 @@
+# Python Cruft
+*.pyc
+*.pyo
+**/__pycache__/
+
+# Development
+venv/
+.idea/
+
+# Packaging artifacts
+dist/
+build/
