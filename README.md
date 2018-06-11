@@ -1,3 +1,8 @@
+# Optimine JSON to DAT file converter
+
+Provides a GUI and converter for translating Optimine JSON data files to older DAT format for use with
+existing tooling to create Pressure Test Certificates.
+
 
 # Packaging
 

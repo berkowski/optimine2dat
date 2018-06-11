@@ -46,7 +46,7 @@ after_test:
   - ps: "ls dist"
 
 artifacts:
-  - path: dist\*
+  - path: dist\Optimine2Dat.exe
 
 #on_success:
 #  You can use this step to upload your artifacts to a public website.
@@ -55,4 +55,9 @@ artifacts:
 
 deploy:
   provider: GitHub
-  auth_token: uXlUXZzdm5UtucDXDLJFmwjfNS4faBhJFBVKpKgx/x9fp6qIWX9JrUej+cPZ4xwM
+  auth_token:  QqUdI5JDC/wkwV6Gh9nYe/HEAtoEUVb5xiPcK6lHi2VKjaM/Kal67oTq1dd9Fn3q
+  draft: false
+  prerelease: false
+  artifact: Optimine2Dat.exe
+  on:
+    appveyor_repo_tag: true
